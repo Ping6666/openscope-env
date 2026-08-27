@@ -1,0 +1,17 @@
+# ----- global ----- #
+
+__pycache__
+**/tmp/
+.env
+
+# ----- data ----- #
+
+save/
+
+# ----- src ----- #
+
+new-src/
+
+# ----- openscope ----- #
+
+openscope/

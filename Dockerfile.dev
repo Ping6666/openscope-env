@@ -1,0 +1,60 @@
+# ----- ref ----- #
+
+# Overview of Images - base, runtime, devel: https://catalog.ngc.nvidia.com/orgs/nvidia/containers/cuda
+# MS CORE FONTS: http://askubuntu.com/a/25614 and https://github.com/captnswing/msttcorefonts/blob/master/Dockerfile
+
+# ----- base ----- #
+
+# FROM ubuntu:22.04
+FROM nvidia/cuda:12.2.2-devel-ubuntu22.04
+
+ENV TZ=Asia/Taipei \
+    DEBIAN_FRONTEND=noninteractive
+
+# ----- node & npm ----- #
+
+COPY --from=node:11.3.0 /usr/local/bin /usr/local/bin
+COPY --from=node:11.3.0 /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/npm
+
+# ----- apps & python ----- #
+
+RUN echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | debconf-set-selections
+RUN apt-get update -y && \
+    apt-get install -y sudo wget curl vim tmux xauth --no-install-recommends && \
+    apt-get install -y zip unzip git net-tools ffmpeg --no-install-recommends && \
+    apt-get install -y fontconfig ttf-mscorefonts-installer msttcorefonts && \
+    apt-get install -y python3.10 python3-pip python3.10-dev python3-tk
+
+# ----- google-chrome & chromedriver ----- #
+
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
+    echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list && \
+    apt-get update -y && \
+    apt-get install -y google-chrome-stable && \
+    VERSION=$(curl -s "https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_STABLE") && \
+    wget -q --continue -P /chromedriver "https://storage.googleapis.com/chrome-for-testing-public/${VERSION}/linux64/chromedriver-linux64.zip" && \
+    unzip /chromedriver/chromedriver* -d /chromedriver
+
+# ----- ENV ----- #
+
+ENV PYTHONPATH="$PYTHONPATH:/workspace"
+ENV PATH /chromedriver/chromedriver-linux64:$PATH
+
+# ----- COPY ----- #
+
+COPY ./env/requirements.txt /workspace/env/requirements.txt
+
+# ----- python ----- #
+
+WORKDIR /workspace
+RUN pip3 install -r ./env/requirements.txt
+
+# ----- COPY ----- #
+
+COPY ./openscope/ /workspace/openscope/
+
+# ----- openscope ----- #
+
+WORKDIR /workspace/openscope
+RUN npm install && \
+    npm run build

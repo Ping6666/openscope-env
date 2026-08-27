@@ -1,0 +1,25 @@
+# --- requirements --- #
+
+tqdm
+numpy == 1.26.4
+pandas
+
+gpustat == 1.0
+torch == 2.4.0
+
+scipy
+scikit-learn
+umap-learn
+
+matplotlib
+seaborn
+
+selenium
+webdriver-manager
+
+Flask
+flask-socketio
+python-socketio[client]
+
+eventlet
+gevent-websocket

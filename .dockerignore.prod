@@ -1,0 +1,14 @@
+# ----- global ----- #
+
+__pycache__
+
+.vscode/
+.git/
+
+# ----- data ----- #
+
+save/
+
+# ----- openscope ----- #
+
+openscope/node_modules/

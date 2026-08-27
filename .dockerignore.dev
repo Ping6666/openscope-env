@@ -1,0 +1,21 @@
+# ----- global ----- #
+
+__pycache__
+
+.vscode/
+.git/
+
+# ----- data ----- #
+
+save/
+
+# ----- src ----- #
+
+src/
+websocket/
+
+new-src/
+
+# ----- openscope ----- #
+
+openscope/node_modules/

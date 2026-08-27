@@ -1,0 +1,17 @@
+# prerequisites: nvidia-container-runtime
+
+services:
+
+  ubuntu:
+    container_name: auto-atc
+    build:
+      context: .
+      dockerfile: ${DOCKERFILE}
+    image: ${IMAGE_NAME}:${IMAGE_TAG}
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]

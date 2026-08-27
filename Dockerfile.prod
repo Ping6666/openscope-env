@@ -1,0 +1,20 @@
+FROM openscope-env-base:latest
+
+# ----- workspace ----- #
+
+COPY . /workspace
+WORKDIR /workspace
+
+# ----- USER ----- #
+
+RUN groupadd -g 1000 x
+RUN useradd -ms /bin/bash user -u 1000 -g 1000
+USER user
+
+# ----- src ----- #
+
+COPY ./new-src /home/user/src
+
+# ----- VOLUME ----- #
+
+VOLUME [ "/home/user/save" ]
